@@ -4,8 +4,32 @@ import { Button, Box } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+interface ApiData {
+  name: {
+    common: string;
+  };
+  capital: string[];
+  population: number;
+  latlng: number[];
+  flags: {
+    png: string;
+  };
+}
 
-function Detail() {
+interface WeatherData {
+  wind: {
+    speed: number;
+  };
+  main: {
+    temp: number;
+  };
+}
+
+interface DetailProps {
+  apiData: ApiData[];
+}
+
+const Detail: React.FC<DetailProps> = () => {
   const location = useLocation();
   const apiData = location.state.apiData
   const API_KEY = '97d09493a27e75636d61161cdff20e78';
@@ -17,7 +41,7 @@ function Detail() {
   }
 
   const [isWeatherVisible, setWeatherVisible] = useState(false);
-  const [weatherData, setWeatherData] = useState(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const navigate = useNavigate();
 
   const handleWeather = async () => {
@@ -63,7 +87,7 @@ function Detail() {
           </Button>
           {isWeatherVisible && (
             <>
-              <p>Wind Speed: {weatherData ? weatherData.wind.speed : 'Loading...'} mph</p>
+              <p>Wind Speed: {weatherData ? weatherData.wind.speed : 'Loading...'} meter/sec</p>
               <p>Temperature: {weatherData ? (weatherData.main.temp-273.15).toFixed(2) : 'Loading...'} °C</p>
             </>
             )}
