@@ -2,6 +2,8 @@ import { useState, ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 export const Background = styled('div')({
   // backgroundImage: `url(${bg})`,
@@ -20,7 +22,14 @@ function Homepage() {
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>{
-    setcountry_input(e.target.value);
+    setcountry_input(e.target.value.trim());
+    const value = e.target.value;
+    if (value.startsWith(' ')) {
+      setcountry_input(value.trimStart());
+    } 
+    else {
+      setcountry_input(value);
+    }
   }
 
   const fetchData = async() => {
@@ -30,7 +39,7 @@ function Homepage() {
       navigate(`/${country_input}`, { state: { apiData: data[0] } });
     }
     else{
-      console.log(data.status);
+      toast.error("Country not found");
     }
   }
 
@@ -41,57 +50,58 @@ function Homepage() {
   const isSearchDisabled = country_input.length == 0;
   return (
     <Background>
-          <Box sx={{ display: 'flex', marginBottom: '460px', flexDirection: 'column', alignItems: 'center' }}>
-          <Box sx={{ marginBottom: '50px', fontSize: '3em' }}>
-            Geo Discovery🌍
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-              marginBottom: '16px',
+        <Toaster position="top-center" reverseOrder={false}/>
+        <Box sx={{ display: 'flex', marginBottom: '460px', flexDirection: 'column', alignItems: 'center' }}>
+        <Box sx={{ marginBottom: '50px', fontSize: '3em' }}>
+          Geo Discovery🌍
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            marginBottom: '16px',
+          }}
+        >
+          <TextField
+            label="Enter Country Name"
+            variant="outlined"
+            value={country_input}
+            onChange={handleChange}
+            inputProps={{
+              style: { color: 'aliceblue' }             
             }}
-          >
-            <TextField
-              label="Enter Country Name"
-              variant="outlined"
-              value={country_input}
-              onChange={handleChange}
-              inputProps={{
-                style: { color: 'aliceblue' }             
-              }}
-              InputLabelProps={{
-                style: { color: 'aliceblue' },
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'aliceblue',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'aliceblue',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'aliceblue',
-                  },
+            InputLabelProps={{
+              style: { color: 'aliceblue' },
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'aliceblue',
                 },
-              }}
-            />
+                '&:hover fieldset': {
+                  borderColor: 'aliceblue',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'aliceblue',
+                },
+              },
+            }}
+          />
 
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSearch}
-              style={{
-                color: 'aliceblue',
-                backgroundColor: isSearchDisabled ? 'grey' : '#1976D2',
-              }}
-              disabled={isSearchDisabled}
-            >
-              Search
-            </Button>
-          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSearch}
+            style={{
+              color: 'aliceblue',
+              backgroundColor: isSearchDisabled ? 'grey' : '#1976D2',
+            }}
+            disabled={isSearchDisabled}
+          >
+            Search
+          </Button>
+        </Box>
         </Box>
     </Background>
   )

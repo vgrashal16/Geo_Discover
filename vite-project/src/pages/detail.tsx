@@ -37,9 +37,9 @@ const Detail: React.FC<any> = () => {
     } 
     
     else {
+      setWeatherVisible(true);
       const data = await fetchData();
       setWeatherData(data);
-      setWeatherVisible(true);
     }
   };
   
@@ -47,7 +47,7 @@ const Detail: React.FC<any> = () => {
     navigate(`/`);
   }
   const flag_img = apiData.flags.png;
-
+  console.log(weatherData);
   return (
     <Background>
     <Box sx={{display: 'flex',flexDirection: 'column',height: '100vh',width: '100vw',}}>
@@ -73,8 +73,8 @@ const Detail: React.FC<any> = () => {
           </Button>
           {isWeatherVisible && (
             <>
-              <p>Wind Speed: {weatherData ? weatherData.wind.speed : 'Loading...'} meter/sec</p>
-              <p>Temperature: {weatherData ? (weatherData.main.temp-273.15).toFixed(2) : 'Loading...'} °C</p>
+              <p data-testid="wind-speed">Wind Speed: {weatherData ? weatherData.wind.speed : 'Wind Loading...'} meter/sec</p>
+              <p data-testid="temperature">Temperature: {weatherData ? (weatherData.main.temp-273.15).toFixed(2) : 'Temp Loading...'} °C</p>
             </>
             )}
         </Box>

@@ -1,6 +1,11 @@
-import {  render, fireEvent, act } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, fireEvent, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import fetchMock from 'jest-fetch-mock';
+import Homepage from '../pages/homepage';
 import Detail from '../pages/detail';
+
+fetchMock.enableMocks();
 
 const mockDataToPass = {
   name: {
@@ -205,38 +210,101 @@ const mockDataToPass = {
   },
 };
 
+const mockWeatherResponse = {
+  wind: {
+    speed: 10, 
+  },
+  main: {
+    temp: 300, 
+  },
+};
 
-test('details populating on Details component or not', () => {
-  const { getByText } = render(    
-    <MemoryRouter initialEntries={[{ pathname: '/india', state: { apiData: mockDataToPass } }]}>
-      <Detail />
-    </MemoryRouter>
-  );  
-  const name = getByText(/INDIA/);
-  const capital = getByText(/New Delhi/i);
-  const population = getByText(/1380004385/);
-  const latitude = getByText(/20/);
-  const longitude = getByText(/77/);
+
+test('search button triggers fetchData on click', async () => {
+  const { getByLabelText, getByText } = render(
+    <BrowserRouter>
+      <Homepage />
+    </BrowserRouter>
+    );
+    const searchInput = getByLabelText('Enter Country Name');
+    const searchButton = getByText('Search');
+    
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+
+    fireEvent.change(searchInput, { target: { value: 'india' } });
+
+    await act(async () => {
+      fireEvent.click(searchButton);
+    });
+    
+    expect(fetchMock).toHaveBeenCalledWith('https://restcountries.com/v3.1/name/india?fullText=true');
+});
+
+test('search button shows error toast on API failure', async () => {
+    const { getByLabelText, getByText } = render(
+    <BrowserRouter>
+      <Homepage />
+    </BrowserRouter>
+    );
+    const searchInput = getByLabelText('Enter Country Name');
+    const searchButton = getByText('Search');
   
-  expect(name).toBeInTheDocument();
-  expect(capital).toBeInTheDocument();
-  expect(population).toBeInTheDocument();
-  expect(latitude).toBeInTheDocument();
-  expect(longitude).toBeInTheDocument();
+    fetchMock.mockResponseOnce(JSON.stringify({"status":404,"message":"Not Found"}));
+ 
+    fireEvent.change(searchInput, { target: { value: 'grashal' } });
+  
+    await act(async () => {
+      fireEvent.click(searchButton);
+    });
+  
+    expect(getByText('Country not found')).toBeInTheDocument();
 });
 
 
-test('checking if go back button works or not',() => {
-  const { getByText } = render(    
+test('weather button triggers fetchData on click', async () => {
+  const {getByText, queryByTestId } = render(
     <MemoryRouter initialEntries={[{ pathname: '/india', state: { apiData: mockDataToPass } }]}>
       <Detail />
     </MemoryRouter>
   );
-  const backButton = getByText(/< Go Back/i);
-
-  act(async () => {
-    fireEvent.click(backButton);
-  });
+  const showWeather = getByText('Show Weather');
+  const API_KEY = '97d09493a27e75636d61161cdff20e78';
   
-  expect(window.location.pathname).toBe('/');
+  fetchMock.mockResponseOnce(JSON.stringify(mockWeatherResponse));
+
+  await act(async () => {
+    fireEvent.click(showWeather);
+  });
+
+  expect(getByText(/Wind Speed/i)).toBeInTheDocument();
+  expect(getByText(/Temperature/i)).toBeInTheDocument();
+
+  expect(fetchMock).toHaveBeenCalledWith(`https://api.openweathermap.org/data/2.5/weather?lat=${mockDataToPass.latlng[0]}&lon=${mockDataToPass.latlng[1]}&appid=${API_KEY}`);
+
+  const hideWeather = getByText('Hide Weather');
+
+  await act(async () => {
+    fireEvent.click(hideWeather);
+  });
+
+  expect(queryByTestId('wind-speed')).toBeNull();
+  expect(queryByTestId('temperature')).toBeNull();
+
+});
+
+test('weather button triggers fetchData on click', async () => {
+  const { getByText } = render(
+    <MemoryRouter initialEntries={[{ pathname: '/india', state: { apiData: mockDataToPass } }]}>
+      <Detail />
+    </MemoryRouter>
+  );
+  const showWeather = getByText('Show Weather');
+  const API_KEY = '97d09493a27e75636d61161cdff20e78';
+  
+  fetchMock.mockResponseOnce(JSON.stringify(mockWeatherResponse));
+
+  fireEvent.click(showWeather);
+  expect(getByText(/Wind Loading/i)).toBeInTheDocument();
+  expect(getByText(/Temp Loading/i)).toBeInTheDocument();
+  expect(fetchMock).toHaveBeenCalledWith(`https://api.openweathermap.org/data/2.5/weather?lat=${mockDataToPass.latlng[0]}&lon=${mockDataToPass.latlng[1]}&appid=${API_KEY}`);
 });

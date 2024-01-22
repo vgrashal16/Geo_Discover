@@ -38,4 +38,19 @@ test('search button is enabled when input is provided', () => {
   expect(searchButton).toBeEnabled();
 });
 
-// Add more test cases as needed...
+test('search button is disabled when input is space', () => {
+  render(
+    <Router>
+      <Homepage />
+    </Router>
+  );
+
+  const inputField = screen.getByLabelText(/Enter Country Name/i);
+  const searchButton = screen.getByRole('button', { name: /search/i });
+
+  fireEvent.change(inputField, { target: { value: ' ' } });
+
+  expect(searchButton).toBeDisabled();
+});
+
+
