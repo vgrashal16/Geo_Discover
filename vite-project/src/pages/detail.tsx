@@ -2,6 +2,7 @@ import { Background } from './homepage'
 import { useLocation } from 'react-router-dom'
 import { Button, Box } from '@mui/material';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 function Detail() {
@@ -17,6 +18,7 @@ function Detail() {
 
   const [isWeatherVisible, setWeatherVisible] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
+  const navigate = useNavigate();
 
   const handleWeather = async () => {
     if (isWeatherVisible) {
@@ -30,12 +32,20 @@ function Detail() {
       setWeatherVisible(true);
     }
   };
-
+  
+  const handleBack = () => {
+    navigate(`/`);
+  }
   const flag_img = apiData[0].flags.png;
 
   return (
     <Background>
     <Box sx={{display: 'flex',flexDirection: 'column',height: '100vh',width: '100vw',}}>
+      <Box sx={{ height: '10%' }}>
+        <Button sx={{ color: 'aliceblue', width: '5%' }} onClick={handleBack}>
+          &lt; Go Back
+        </Button>
+      </Box>
       <Box sx={{display: 'flex',height: '30%',flexDirection: 'row',width: '100%',justifyContent: 'center',alignItems: 'center',gap: '3%',fontSize: '2em'}}>
         <img src={flag_img}/>
         <p>{apiData[0].name.common.toUpperCase()}</p>
