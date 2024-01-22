@@ -27,7 +27,7 @@ function Homepage() {
     const res = await fetch(`https://restcountries.com/v3.1/name/${country_input}?fullText=true`);
     const data = await res.json();
     if (data.status != 404){
-      navigate(`/${country_input}`, { state: { apiData: data } });
+      navigate(`/${country_input}`, { state: { apiData: data[0] } });
     }
     else{
       console.log(data.status);

@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/:country" element={<Detail apiData={[]} />} />
+        <Route path="/:country" element={<Detail/>} />
       </Routes>
     </Router>
   )
