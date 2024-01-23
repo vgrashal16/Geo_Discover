@@ -250,7 +250,7 @@ test('search button shows error toast on API failure', async () => {
     const searchButton = getByText('Search');
   
     fetchMock.mockResponseOnce(JSON.stringify({"status":404,"message":"Not Found"}));
- 
+    
     fireEvent.change(searchInput, { target: { value: 'grashal' } });
   
     await act(async () => {
