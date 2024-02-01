@@ -22,7 +22,7 @@ Geo Discovery is a React application that allows users to explore information ab
 1. Clone the repository:
 
    ```
-   git clone https://github.com/yourusername/geo-discovery.git
+   git clone https://github.com/vgrashal16/Geo_Discover
    ```
 
 2. Install dependencies:
@@ -35,13 +35,13 @@ Geo Discovery is a React application that allows users to explore information ab
 3. Start the development server:
 
    ```
-   npm start
+   npm run dev
    ```
 
 4. Open the application in your browser:
 
    ```
-   http://localhost:3000
+   http://localhost:5713
    ```
 
 ## Contributing
