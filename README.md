@@ -1,7 +1,3 @@
-Sure, here's a description you could use for your GitHub project:
-
----
-
 # Geo Discovery 🌍
 
 Geo Discovery is a React application that allows users to explore information about countries and their weather. This project utilizes the [restcountries](https://restcountries.com/) API to fetch country details and the [OpenWeatherMap](https://openweathermap.org/) API to retrieve weather information.
