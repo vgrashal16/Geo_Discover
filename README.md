@@ -48,10 +48,3 @@ Geo Discovery is a React application that allows users to explore information ab
 
 Contributions are welcome! If you have any suggestions, bug fixes, or new features to propose, please open an issue or submit a pull request.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-Feel free to customize the description according to your project's specific features and details.
